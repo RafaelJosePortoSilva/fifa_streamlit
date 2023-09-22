@@ -14,9 +14,17 @@ def extrair_numeros(texto):
     numeros = ''.join(filter(str.isdigit, str(texto)))
     return int(numeros) if numeros else None
 
+
 if 'data' not in st.session_state:
-    df_list = [pd.read_csv('db/fifa/' + x) for x in os.listdir('db/fifa') if '.csv' in x]
-    df = pd.concat(df_list)
+    diretorio = 'db/fifa/'
+    arquivos = [arquivo for arquivo in os.listdir(diretorio) if arquivo.endswith('.csv')]
+    df_list = list()
+    for arquivo in arquivos:
+        df = pd.read_csv(os.path.join(diretorio, arquivo))
+        df['nome_arq'] = arquivo  # Adiciona o nome do arquivo como uma nova coluna
+        df_list.append(df)
+    df = pd.concat(df_list, ignore_index=True)
+
     df['Contract Valid Until'] = pd.to_numeric(df['Contract Valid Until'].apply(retira_ano))
     df['Value'] = pd.to_numeric(df['Value'].apply(extrair_numeros))        
     df = df[df['Contract Valid Until']>= datetime.today().year]
