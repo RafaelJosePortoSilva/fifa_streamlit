@@ -14,6 +14,10 @@ def extrair_numeros(texto):
     numeros = ''.join(filter(str.isdigit, str(texto)))
     return int(numeros) if numeros else None
 
+def extrair_ano_nome(nome):
+    nome = str(nome)
+    return '20' + nome[4:6]
+
 
 if 'data' not in st.session_state:
     diretorio = 'db/fifa/'
@@ -21,13 +25,13 @@ if 'data' not in st.session_state:
     df_list = list()
     for arquivo in arquivos:
         df = pd.read_csv(os.path.join(diretorio, arquivo))
-        df['nome_arq'] = arquivo  # Adiciona o nome do arquivo como uma nova coluna
+        df['nome_arq'] = extrair_ano_nome(arquivo)  # Adiciona o nome do arquivo como uma nova coluna
         df_list.append(df)
     df = pd.concat(df_list, ignore_index=True)
-
+    df['nome_arq'] = pd.to_numeric(df['nome_arq'])
     df['Contract Valid Until'] = pd.to_numeric(df['Contract Valid Until'].apply(retira_ano))
     df['Value'] = pd.to_numeric(df['Value'].apply(extrair_numeros))        
-    df = df[df['Contract Valid Until']>= datetime.today().year]
+    #df = df[df['Contract Valid Until']>= datetime.today().year]
     df =  df[df['Value'] > 0]
     df.sort_values(by='ID',inplace=True)
     st.session_state['data'] = df
