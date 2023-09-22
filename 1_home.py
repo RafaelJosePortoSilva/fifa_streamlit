@@ -2,10 +2,23 @@ import streamlit as st
 import pandas as pd
 import os
 import webbrowser
+from datetime import datetime
+
+def retira_ano(valor):
+    if len(str(valor)) > 4:
+        return valor.split(',')[1].replace(' ','')
+    else:
+        return valor
+
+def extrair_numeros(texto):
+    numeros = ''.join(filter(str.isdigit, str(texto)))
+    return int(numeros) if numeros else None
 
 if 'data' not in st.session_state:
     df_list = [pd.read_csv('db/fifa/' + x) for x in os.listdir('db/fifa') if '.csv' in x]
     df = pd.concat(df_list)
+    df = df[pd.to_numeric(df['Contract Valid Until'].apply(retira_ano)) >= datetime.today().year]
+    df =  df[pd.to_numeric(df['Value'].apply(extrair_numeros)) > 0]
     df.sort_values(by='ID',inplace=True)
     st.session_state['data'] = df
 
