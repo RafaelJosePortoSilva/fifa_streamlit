@@ -17,8 +17,10 @@ def extrair_numeros(texto):
 if 'data' not in st.session_state:
     df_list = [pd.read_csv('db/fifa/' + x) for x in os.listdir('db/fifa') if '.csv' in x]
     df = pd.concat(df_list)
-    df = df[pd.to_numeric(df['Contract Valid Until'].apply(retira_ano)) >= datetime.today().year]
-    df =  df[pd.to_numeric(df['Value'].apply(extrair_numeros)) > 0]
+    df['Contract Valid Until'] = pd.to_numeric(df['Contract Valid Until'].apply(retira_ano))
+    df['Value'] = pd.to_numeric(df['Value'].apply(extrair_numeros))        
+    df = df[df['Contract Valid Until']>= datetime.today().year]
+    df =  df[df['Value'] > 0]
     df.sort_values(by='ID',inplace=True)
     st.session_state['data'] = df
 

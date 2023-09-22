@@ -15,3 +15,7 @@ else:
     clubes_filtrado = clubes
 
 clube = st.sidebar.selectbox('Clube',clubes_filtrado)
+
+df_players = df[df.Club == clube]
+players = df_players.Name.drop_duplicates().sort_values()
+player = st.sidebar.selectbox('Jogadores',players)
