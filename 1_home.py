@@ -32,7 +32,7 @@ if 'data' not in st.session_state:
     df = pd.concat(df_list, ignore_index=True)
     
     for i in range(df.shape[0]):
-        df.iloc[i,1]  = arruma_nome(df.iloc[i,0],df)
+        df.iloc[i,1]  = arruma_nome(df.iloc[i,0],df[['ID','Name']])
 
     df['nome_arq'] = pd.to_numeric(df['nome_arq'])
     df['Contract Valid Until'] = pd.to_numeric(df['Contract Valid Until'].apply(retira_ano))
