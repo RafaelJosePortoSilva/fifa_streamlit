@@ -18,6 +18,8 @@ def extrair_ano_nome(nome):
     nome = str(nome)
     return '20' + nome[4:6]
 
+def arruma_nome(id,aux):
+    return aux[aux.ID == id].iloc[0,1]
 
 if 'data' not in st.session_state:
     diretorio = 'db/fifa/'
@@ -28,6 +30,10 @@ if 'data' not in st.session_state:
         df['nome_arq'] = extrair_ano_nome(arquivo)  # Adiciona o nome do arquivo como uma nova coluna
         df_list.append(df)
     df = pd.concat(df_list, ignore_index=True)
+    
+    for i in range(df.shape[0]):
+        df.iloc[i,1]  = arruma_nome(df.iloc[i,0],df)
+
     df['nome_arq'] = pd.to_numeric(df['nome_arq'])
     df['Contract Valid Until'] = pd.to_numeric(df['Contract Valid Until'].apply(retira_ano))
     df['Value'] = pd.to_numeric(df['Value'].apply(extrair_numeros))        
