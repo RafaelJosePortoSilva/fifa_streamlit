@@ -8,4 +8,6 @@ if 'data' not in st.session_state:
     df = pd.concat(df_list)
     df.sort_values(by='ID',inplace=True)
     st.session_state['data'] = df
-    df
+
+
+st.write('# FIFA OFFICIAL DATASET')
