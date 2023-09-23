@@ -2,10 +2,16 @@ import streamlit as st
 import pandas as pd
 import os
 
+
+st.set_page_config(
+    page_title='Players',
+    layout='wide'
+)
+
 df = st.session_state['data']
 
-
-ano = st.sidebar.select_slider('Ano',df.nome_arq.drop_duplicates().sort_values())
+anos = df.nome_arq.drop_duplicates().sort_values()
+ano = st.sidebar.select_slider('Ano',anos,max(anos))
 df = df[df.nome_arq == ano]
 # selecionar o clube
 clubes = df.Club.drop_duplicates().dropna().sort_values(ascending = True)
@@ -35,3 +41,18 @@ st.title(player_stats.Name)
 
 st.markdown(f'**Clube:** {player_stats.Club}')
 st.markdown(f'**Posição:** {player_stats.Position}')
+
+col1,col2,col3,col4 = st.columns(4)
+
+col1.markdown(f'**Idade:** {player_stats.Age} anos')
+col2.markdown(f'**Altura:** {player_stats.Height}')
+col3.markdown(f'**Peso:** {player_stats.Weight}')
+
+st.divider()
+st.subheader(f'**Overall:** {player_stats.Overall}')
+st.progress(int(player_stats.Overall))
+
+col1,col2,col3,col4 = st.columns(4)
+
+col1.metric(label='Valor de Mercado',
+            value=f'€ {player_stats.Value}')

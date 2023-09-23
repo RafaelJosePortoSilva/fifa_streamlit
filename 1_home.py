@@ -23,7 +23,26 @@ def arruma_posicao(pos):
         return pos.split('>')[1]
     except:
         return None
+
+def arruma_altura(alt):
+    try:
+        return alt.lower().split('cm')[0]
+    except:
+        return None
     
+def arruma_peso(peso):
+    try:
+        return peso.lower().split('kg')[0]
+    except:
+        return None
+    
+
+
+st.set_page_config(
+    page_title='Home',
+    layout='wide'
+)
+
 if 'data' not in st.session_state:
     diretorio = 'db/fifa/'
     arquivos = [arquivo for arquivo in os.listdir(diretorio) if arquivo.endswith('.csv')]
@@ -37,8 +56,9 @@ if 'data' not in st.session_state:
     df['nome_arq'] = pd.to_numeric(df['nome_arq'])
     df['Contract Valid Until'] = pd.to_numeric(df['Contract Valid Until'].apply(retira_ano))
     df['Value'] = pd.to_numeric(df['Value'].apply(extrair_numeros))
-    df['Position'] = df.Position.apply(arruma_posicao)      
-    #df = df[df['Contract Valid Until']>= datetime.today().year]
+    df['Position'] = df.Position.apply(arruma_posicao)
+    #df['Height'] = df.Height.apply(arruma_altura)
+    #df['Weight'] = df.Weight.apply(arruma_peso)
     df =  df[df['Value'] > 0]
     df.sort_values(by='ID',inplace=True)
     st.session_state['data'] = df
