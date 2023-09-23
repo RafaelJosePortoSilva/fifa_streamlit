@@ -2,8 +2,6 @@ import streamlit as st
 import pandas as pd
 import os
 
-st.write('# PLAYERS')
-
 df = st.session_state['data']
 
 
@@ -29,5 +27,11 @@ else:
     players_filtrado = players
 
 player = st.sidebar.selectbox('Jogadores',players_filtrado)
+player_stats = df_players[df_players.Name == player].iloc[0]
 
-df[df.Name == player]
+st.image(player_stats.Photo,
+         width= 120)
+st.title(player_stats.Name)
+
+st.markdown(f'**Clube:** {player_stats.Club}')
+st.markdown(f'**Posição:** {player_stats.Position}')

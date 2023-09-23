@@ -18,9 +18,12 @@ def extrair_ano_nome(nome):
     nome = str(nome)
     return '20' + nome[4:6]
 
-def arruma_nome(id,aux):
-    return aux[aux.ID == id].iloc[0,1]
-
+def arruma_posicao(pos):
+    try:
+        return pos.split('>')[1]
+    except:
+        return None
+    
 if 'data' not in st.session_state:
     diretorio = 'db/fifa/'
     arquivos = [arquivo for arquivo in os.listdir(diretorio) if arquivo.endswith('.csv')]
@@ -30,13 +33,11 @@ if 'data' not in st.session_state:
         df['nome_arq'] = extrair_ano_nome(arquivo)  # Adiciona o nome do arquivo como uma nova coluna
         df_list.append(df)
     df = pd.concat(df_list, ignore_index=True)
-    
-    for i in range(df.shape[0]):
-        df.iloc[i,1]  = arruma_nome(df.iloc[i,0],df[['ID','Name']])
 
     df['nome_arq'] = pd.to_numeric(df['nome_arq'])
     df['Contract Valid Until'] = pd.to_numeric(df['Contract Valid Until'].apply(retira_ano))
-    df['Value'] = pd.to_numeric(df['Value'].apply(extrair_numeros))        
+    df['Value'] = pd.to_numeric(df['Value'].apply(extrair_numeros))
+    df['Position'] = df.Position.apply(arruma_posicao)      
     #df = df[df['Contract Valid Until']>= datetime.today().year]
     df =  df[df['Value'] > 0]
     df.sort_values(by='ID',inplace=True)
