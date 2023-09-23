@@ -52,7 +52,11 @@ st.divider()
 st.subheader(f'**Overall:** {player_stats.Overall}')
 st.progress(int(player_stats.Overall))
 
-col1,col2,col3,col4 = st.columns(4)
+col1,col2,col3,col4 = st.columns(3)
 
 col1.metric(label='Valor de Mercado',
-            value=f'€ {player_stats.Value}')
+            value=f'€{player_stats.Value}')
+col2.metric(label='Remuneração Semanal',
+            value=f'{player_stats.Wage}')
+col3.metric(label='Cláusula de Rescisão',
+            value=f'{player_stats["Release Clause"]}')
